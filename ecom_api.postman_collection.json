@@ -1,0 +1,805 @@
+{
+	"info": {
+		"_postman_id": "buy-more-api-collection",
+		"name": "BuyMore E-Commerce API",
+		"description": "Complete API collection for BuyMore e-commerce platform. Includes authentication, products, cart, orders, discounts, and admin endpoints.",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"auth": {
+		"type": "bearer",
+		"bearer": [
+			{
+				"key": "token",
+				"value": "{{authToken}}",
+				"type": "string"
+			}
+		]
+	},
+	"item": [
+		{
+			"name": "Authentication",
+			"item": [
+				{
+					"name": "Register",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"name\": \"Jinendra\",\n  \"email\": \"jinendra@gmail.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/register",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "register"]
+						}
+					}
+				},
+				{
+					"name": "Login",
+					"event": [
+						{
+							"listen": "test",
+							"script": {
+								"exec": [
+									"if (pm.response.code === 201) {",
+									"    var jsonData = pm.response.json();",
+									"    pm.environment.set('authToken', jsonData.access_token);",
+									"}"
+								]
+							}
+						}
+					],
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"email\": \"jinendra@gmail.com\",\n  \"password\": \"password123\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/auth/login",
+							"host": ["{{baseUrl}}"],
+							"path": ["auth", "login"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Products",
+			"item": [
+				{
+					"name": "Get All Products",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products?page=1&limit=12",
+							"host": ["{{baseUrl}}"],
+							"path": ["products"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "12"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Product by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Create Product (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "New Product",
+									"type": "text"
+								},
+								{
+									"key": "description",
+									"value": "Product description here",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "99.99",
+									"type": "text"
+								},
+								{
+									"key": "stock",
+									"value": "100",
+									"type": "text"
+								},
+								{
+									"key": "categoryId",
+									"value": "category-uuid-or-empty",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products",
+							"host": ["{{baseUrl}}"],
+							"path": ["products"]
+						}
+					}
+				},
+				{
+					"name": "Update Product (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "formdata",
+							"formdata": [
+								{
+									"key": "name",
+									"value": "Updated Product Name",
+									"type": "text"
+								},
+								{
+									"key": "price",
+									"value": "149.99",
+									"type": "text"
+								},
+								{
+									"key": "image",
+									"type": "file",
+									"src": []
+								}
+							]
+						},
+						"url": {
+							"raw": "{{baseUrl}}/products/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Deactivate Product (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id/deactivate",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", ":id", "deactivate"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Activate Product (Admin)",
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/:id/activate",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", ":id", "activate"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Products Admin (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/products/admin/all?page=1&limit=12",
+							"host": ["{{baseUrl}}"],
+							"path": ["products", "admin", "all"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "12"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Cart",
+			"item": [
+				{
+					"name": "Add to Cart",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"productId\": \"product-uuid-here\",\n  \"quantity\": 1\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/add",
+							"host": ["{{baseUrl}}"],
+							"path": ["cart", "add"]
+						}
+					}
+				},
+				{
+					"name": "Get Cart",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cart",
+							"host": ["{{baseUrl}}"],
+							"path": ["cart"]
+						}
+					}
+				},
+				{
+					"name": "Remove from Cart",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/cart/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["cart", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cart-item-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Cart Quantity",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"quantity\": 3\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/cart/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["cart", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "cart-item-uuid-here"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Orders",
+			"item": [
+				{
+					"name": "Checkout",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"discountCode\": \"DISCOUNT10\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/checkout",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", "checkout"]
+						}
+					}
+				},
+				{
+					"name": "Get User Orders",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Order by ID",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get All Orders (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/orders/admin/all?page=1&limit=10",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", "admin", "all"],
+							"query": [
+								{
+									"key": "page",
+									"value": "1"
+								},
+								{
+									"key": "limit",
+									"value": "10"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Order Status (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"status\": \"shipped\",\n  \"trackingNumber\": \"TRACK123456\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/orders/:id/status",
+							"host": ["{{baseUrl}}"],
+							"path": ["orders", ":id", "status"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "order-uuid-here"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Categories",
+			"item": [
+				{
+					"name": "Get All Categories",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories"]
+						}
+					}
+				},
+				{
+					"name": "Get Category by ID",
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/categories/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["categories", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "category-uuid-here"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Favorites",
+			"item": [
+				{
+					"name": "Add to Favorites",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/:productId",
+							"host": ["{{baseUrl}}"],
+							"path": ["favorites", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Remove from Favorites",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/:productId",
+							"host": ["{{baseUrl}}"],
+							"path": ["favorites", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get User Favorites",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites",
+							"host": ["{{baseUrl}}"],
+							"path": ["favorites"]
+						}
+					}
+				},
+				{
+					"name": "Check if Favorite",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/check/:productId",
+							"host": ["{{baseUrl}}"],
+							"path": ["favorites", "check", ":productId"],
+							"variable": [
+								{
+									"key": "productId",
+									"value": "product-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Get Favorite Product IDs",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/favorites/ids",
+							"host": ["{{baseUrl}}"],
+							"path": ["favorites", "ids"]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Discounts V2",
+			"item": [
+				{
+					"name": "Create Discount (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SUMMER20\",\n  \"name\": \"Summer Sale\",\n  \"description\": \"20% off on all items\",\n  \"type\": \"percentage\",\n  \"value\": 20,\n  \"isGlobal\": false,\n  \"isActive\": true,\n  \"isListedToUser\": true,\n  \"conditionType\": \"first_order\",\n  \"conditionValue\": {},\n  \"expiresAt\": \"2024-12-31T23:59:59Z\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2"]
+						}
+					}
+				},
+				{
+					"name": "Get All Discounts (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2"]
+						}
+					}
+				},
+				{
+					"name": "Get Listed Discounts",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/listed",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", "listed"]
+						}
+					}
+				},
+				{
+					"name": "Validate Discount Code",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"code\": \"SUMMER20\",\n  \"orderTotal\": 100.00\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/validate",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", "validate"]
+						}
+					}
+				},
+				{
+					"name": "Get Discount by ID (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "discount-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Update Discount (Admin)",
+					"request": {
+						"method": "PUT",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"isActive\": false\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "discount-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Delete Discount (Admin)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/:id",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", ":id"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "discount-uuid-here"
+								}
+							]
+						}
+					}
+				},
+				{
+					"name": "Assign to Eligible Users (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/discounts-v2/:id/assign-to-eligible-users",
+							"host": ["{{baseUrl}}"],
+							"path": ["discounts-v2", ":id", "assign-to-eligible-users"],
+							"variable": [
+								{
+									"key": "id",
+									"value": "discount-uuid-here"
+								}
+							]
+						}
+					}
+				}
+			]
+		},
+		{
+			"name": "Admin",
+			"item": [
+				{
+					"name": "Generate Discount Code (Admin)",
+					"request": {
+						"method": "POST",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\n  \"orderId\": \"order-uuid-here\"\n}"
+						},
+						"url": {
+							"raw": "{{baseUrl}}/admin/discount/generate",
+							"host": ["{{baseUrl}}"],
+							"path": ["admin", "discount", "generate"]
+						}
+					}
+				},
+				{
+					"name": "Get Statistics (Admin)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrl}}/admin/statistics",
+							"host": ["{{baseUrl}}"],
+							"path": ["admin", "statistics"]
+						}
+					}
+				}
+			]
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "http://localhost:3001",
+			"type": "string"
+		},
+		{
+			"key": "authToken",
+			"value": "",
+			"type": "string"
+		}
+	]
+}
+
