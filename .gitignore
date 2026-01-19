@@ -9,8 +9,6 @@ build/
 */build/
 
 # Environment files
-.env
-.env.local
 .env.*.local
 
 # Logs
@@ -42,3 +40,4 @@ coverage/
 # Testing
 .nyc_output/
 
+config.bat
