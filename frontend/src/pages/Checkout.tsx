@@ -1,4 +1,19 @@
-import { useState } from 'react';
+Exploring the codebase to understand the project structure and locate the order placement flow.
+
+
+[4 tools called]
+
+
+Reviewing the Checkout page to understand the current implementation:
+
+
+[2 tools called]
+
+
+Creating a Razorpay-style payment gateway UI component and integrating it into the checkout flow. Adding a payment method selection step before order placement.
+
+
+[2 tools called]import { useState } from 'react';
 import { useQuery, useMutation, useQueryClient } from '@tanstack/react-query';
 import { motion } from 'framer-motion';
 import { CheckCircle, XCircle, Tag } from 'lucide-react';
@@ -7,12 +22,14 @@ import { orderApi } from '../api/orders';
 import { discountApi } from '../api/discounts';
 import { useNavigate } from 'react-router-dom';
 import toast from 'react-hot-toast';
+import PaymentGateway from '../components/PaymentGateway';
 
 const Checkout = () => {
   const navigate = useNavigate();
   const queryClient = useQueryClient();
   const [discountCode, setDiscountCode] = useState('');
   const [appliedDiscount, setAppliedDiscount] = useState<{ code: string; amount: number } | null>(null);
+  const [showPaymentGateway, setShowPaymentGateway] = useState(false);
 
   const { data: cartItems = [] } = useQuery({
     queryKey: ['cart'],
@@ -51,6 +68,10 @@ const Checkout = () => {
   });
 
   const handleCheckout = () => {
+    setShowPaymentGateway(true);
+  };
+
+  const handlePaymentSuccess = () => {
     checkoutMutation.mutate(appliedDiscount?.code || undefined);
   };
 
@@ -252,10 +273,18 @@ const Checkout = () => {
             disabled={checkoutMutation.isLoading}
             className="w-full bg-pink-500 text-white py-3 rounded-lg hover:bg-pink-600 disabled:bg-gray-300 disabled:cursor-not-allowed transition-colors font-semibold text-lg"
           >
-            {checkoutMutation.isLoading ? 'Processing...' : 'Place Order'}
+            {checkoutMutation.isLoading ? 'Processing...' : 'Proceed to Payment'}
           </motion.button>
         </div>
       </motion.div>
+
+      {/* Payment Gateway Modal */}
+      <PaymentGateway
+        isOpen={showPaymentGateway}
+        onClose={() => setShowPaymentGateway(false)}
+        amount={total}
+        onSuccess={handlePaymentSuccess}
+      />
     </div>
   );
 };
